@@ -25,4 +25,19 @@ Resources:
                       print(f"Automatic rotation enabled for Key: {key_id}.")
                   except Exception as e:
                       print(f"Error enabling key rotation for CMK: {key_id}. Error: {str(e)}")
-  
+  execution_role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: cmk_auto_rotation_role
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+            - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+        - arn:aws:iam:aws:policy/AWSLambdaExecute
+      # kms:EnableKeyRotation is a kms key policy not an IAM policy so need to figure that out first
