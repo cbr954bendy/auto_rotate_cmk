@@ -5,7 +5,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Runtime: python3.10
-      Role: ## Need to write this
+      Role: !Ref execution_role 
       Handler: auto_rotate.handler # double check this too
       Code:
         ZipFile:  |
@@ -39,5 +39,6 @@ Resources:
               - lambda.amazonaws.com
         Version: 2012-10-17
       ManagedPolicyArns:
-        - arn:aws:iam:aws:policy/AWSLambdaExecute
-      # kms:EnableKeyRotation is a kms key policy not an IAM policy so need to figure that out first
+        # don't see enable* in this managed policy may have to double check 
+        - arn:aws:iam:aws:policy/AWSKeyManagementServicePowerUser
+      
