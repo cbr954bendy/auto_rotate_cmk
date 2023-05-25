@@ -1,5 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Lambda Function checking CMK auto rotation and enabling.
+Parameters:
+  EventSchedule:
+    Type: String
+    Default: 30 days
 Resources:
   lambda_function:
     Type: AWS::Lambda::Function
@@ -42,3 +46,13 @@ Resources:
         # don't see enable* in this managed policy may have to double check 
         - arn:aws:iam:aws:policy/AWSKeyManagementServicePowerUser
       
+  ScheduleRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: InvokeLambdaAutoRotateCMK
+      ScheduleExpression: !Sub
+        - rate(${EventSchedule})
+        - {EventSchedule: !Ref EventSchedule}
+      State: ENABLED
+      Targets: 
+        - Arn: !Ref lambda_function # Don't remember if this will work or have to get the actual arn value
